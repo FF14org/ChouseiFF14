@@ -1,0 +1,7 @@
+./web
+./storage
+./db
+.gitignore
+README.md
+LICENSE
+./.git

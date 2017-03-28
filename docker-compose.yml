@@ -1,0 +1,44 @@
+version: '2'
+services:
+  app:
+    build: .
+    restart: always
+    expose:
+      - "8000"
+    links:
+      - db:db
+    volumes:
+      - .:/usr/src/app
+    command: gunicorn ChouseiFF14.wsgi -w 2 -b :8000
+
+  web:
+    build: ./web
+    restart: always
+    ports:
+      - "8080:80"
+      - "4443:443"
+    links:
+      - app:app
+    volumes:
+      - ./web/nginx.conf:/etc/nginx/nginx.conf
+      - ./web/ssl:/etc/nginx/ssl
+      - ./web/webserver.conf:/etc/nginx/conf.d/webserver.conf
+    volumes_from:
+      - app
+
+  db:
+    image: mysql:5.7.17
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYDB_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYDB_DATABASE
+      MYSQL_USER: $MYDB_USER
+      MYSQL_PASSWORD: $MYDB_PASSWORD
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db:/etc/mysql/conf.d
+    volumes_from:
+      - storage
+
+  storage:
+    build: ./storage
