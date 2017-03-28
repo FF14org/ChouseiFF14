@@ -76,9 +76,9 @@ WSGI_APPLICATION = 'ChouseiFF14.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'chousei_development',
-        'USER': 'chousei',
-        'PASSWORD': 'yourpassword',
+        'NAME': os.environ["MYDB_DATABASE"],
+        'USER': os.environ["MYDB_USER"],
+        'PASSWORD': os.environ["MYDB_PASSWORD"],
         'HOST': 'db',
         'PORT': 3306,
     }
