@@ -6,14 +6,13 @@ services:
       MYDB_DATABASE: $MYDB_DATABASE
       MYDB_USER: $MYDB_USER
       MYDB_PASSWORD: $MYDB_PASSWORD
-    restart: always
     expose:
-      - "8000"
+      - "8080"
     links:
       - db:db
     volumes:
-      - .:/usr/src/app
-    command: gunicorn ChouseiFF14.wsgi -w 2 -b :8000
+      - .:/spring
+    command: java $JAVA_OPTS -jar /usr/local/spring/libs/ChouseiFF14-0.0.1-SNAPSHOT.jar
 
   web:
     build: ./web
@@ -31,16 +30,13 @@ services:
       - app
 
   db:
-    image: mysql:5.7.17
+    image: postgres:alpine
     environment:
-      MYSQL_ROOT_PASSWORD: $MYDB_ROOT_PASSWORD
-      MYSQL_DATABASE: $MYDB_DATABASE
-      MYSQL_USER: $MYDB_USER
-      MYSQL_PASSWORD: $MYDB_PASSWORD
+      POSTGRES_DB: $MYDB_DATABASE
+      POSTGRES_USER: $MYDB_USER
+      POSTGRES_PASSWORD: $MYDB_PASSWORD
     ports:
-      - "3306:3306"
-    volumes:
-      - ./db:/etc/mysql/conf.d
+      - "5432:5432"
     volumes_from:
       - storage
 

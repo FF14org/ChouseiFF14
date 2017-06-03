@@ -1,6 +1,5 @@
 FROM busybox
 
-VOLUME /var/lib/mysql
-VOLUME /data
+VOLUME /var/lib/postgresql/data
 
 CMD /bin/sh

@@ -1,15 +1,19 @@
-FROM python:3.6
+FROM gradle:alpine
+MAINTAINER drakontia <mhden@drakontia.com>
 
-RUN mkdir -p /usr/src/app/static
-WORKDIR /usr/src/app
+User root
+COPY . /spring
+WORKDIR /spring
 
-ENV PYTHONDONTWRITEBYTECODE 1
+RUN apk update && \
+    gradle clean && \
+    gradle build && \
+    mkdir -p /usr/local/spring/libs && \
+    cp -R /spring/build/libs/*.jar /usr/local/spring/libs/ && \
+    rm -rf /var/cache/apk/* && \
+    rm -rf ~/.gradle && \
+    rm -rf /spring
 
-COPY ./requirements.txt .
-RUN apt-get update && \
-    apt-get install -y mysql-client libmysqlclient-dev && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    pip3 install --no-cache-dir -r ./requirements.txt
+ENTRYPOINT java $JAVA_OPTS -jar /usr/local/spring/libs/ChouseiFF14-0.0.1-SNAPSHOT.jar
 
-ADD . /usr/src/app
+EXPOSE 8080
